@@ -1,0 +1,24 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Environment
+.env
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Data
+data/raw/
+data/processed/
+
+# AWS
+.aws/
+
+# ML artifacts
+models/
+mlruns/
+
+# OS
+.DS_Store
