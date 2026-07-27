@@ -1,42 +1,49 @@
 # Cloud Retail Analytics Platform
 
-An end-to-end cloud analytics engineering project built on AWS, Snowflake, and dbt using the M5 Retail Sales Dataset.
+A cloud-based analytics engineering project built on **AWS, Snowflake, and dbt** using the **M5 Retail Sales Forecasting Dataset**.
 
-The goal of this project is to demonstrate a modern cloud data platform architecture, including cloud data ingestion, data lake concepts, cloud data warehousing, ELT transformations, data modeling, and data quality validation.
+The goal of this project is to demonstrate a modern cloud analytics platform architecture including:
+
+- Data ingestion into Amazon S3 Data Lake
+- AWS Glue Data Catalog integration
+- Serverless analytics using Amazon Athena
+- Cloud data warehousing with Snowflake
+- ELT transformations using dbt
+- Data quality validation
 
 ---
 
 # Architecture
 
-```text
-Retail Dataset
-                 |
-                 v
-          Python Ingestion
-             (boto3)
-                 |
-                 v
-          Amazon S3
-        (Raw Data Lake)
-                 |
-                 v
-          AWS Glue
-   (Data Catalog / Metadata Layer)
-                 |
-                 v
-          Amazon Athena
-    (SQL Query Engine on S3)
-                 |
-                 v
-          Snowflake
-    (Cloud Data Warehouse)
-                 |
-                 v
-             dbt
-    (Transformations & Modeling)
-                 |
-                 v
-        Analytics Data Marts
+```
+                    M5 Retail Dataset
+                           |
+                           v
+                 Python S3 Ingestion
+                     (boto3)
+                           |
+                           v
+                    Amazon S3
+                 Raw Data Lake Layer
+                           |
+                           v
+                    AWS Glue
+              Data Catalog / Crawler
+                           |
+                           v
+                  Amazon Athena
+              Serverless SQL Analytics
+                           |
+                           v
+                    Snowflake
+             Cloud Data Warehouse Layer
+                           |
+                           v
+                       dbt
+            Transformations & Modeling
+                           |
+                           v
+                Analytics Data Marts
 ```
 
 ---
@@ -59,17 +66,22 @@ Retail Dataset
 - SQL
 - dbt-utils
 
+## Programming
+
+- Python
+- boto3
+- Pandas
+
 ## Data Quality
 
 - dbt tests
 - not_null tests
 - unique tests
 
-## Development
+## Development Tools
 
-- Python
-- boto3
 - Git
+- GitHub
 - VS Code
 
 ---
@@ -80,15 +92,16 @@ This project uses the **M5 Retail Sales Forecasting Dataset**.
 
 The dataset contains:
 
-- Daily sales history
+- Daily retail sales history
 - Product information
 - Store information
 - Calendar events
-- Weekly pricing data
+- Weekly product prices
 
-Main source files:
 
-```text
+Main datasets:
+
+```
 sales_train_validation.csv
 sell_prices.csv
 calendar.csv
@@ -98,19 +111,32 @@ calendar.csv
 
 # Project Structure
 
-```text
+```
 cloud-retail-analytics-platform/
 
 │
+├── aws/
+│   │
+│   ├── s3/
+│   │   └── bucket_structure.md
+│   │
+│   ├── glue/
+│   │   └── crawler_config.md
+│   │
+│   └── athena/
+│       └── queries.sql
+│
 ├── src/
+│   │
 │   └── ingestion/
 │       └── upload_to_s3.py
 │
 ├── dbt/
+│   │
 │   └── cloud_retail_dbt/
-│
-│       ├── models/
 │       │
+│       ├── models/
+│       │   │
 │       │   ├── staging/
 │       │   │   ├── stg_sales.sql
 │       │   │   ├── stg_prices.sql
@@ -136,182 +162,150 @@ cloud-retail-analytics-platform/
 
 ---
 
-# Data Pipeline
+# Cloud Data Pipeline
 
-## 1. Cloud Data Ingestion
+## 1. Data Lake Layer - Amazon S3
 
-Raw retail CSV files are uploaded into Amazon S3 using Python and boto3.
+Raw retail datasets are uploaded into Amazon S3 using a Python ingestion script.
 
-The ingestion workflow:
+The ingestion process uses:
 
-```text
+- Python
+- boto3
+- AWS SDK
+
+
+Example:
+
+```
 Local CSV Files
 
         |
 
-Python boto3 uploader
+        v
+
+Python boto3 ingestion
 
         |
 
-Amazon S3 Raw Data Lake
+        v
+
+Amazon S3 Data Lake
 ```
 
-The ingestion script:
+S3 structure:
 
-```text
-src/ingestion/upload_to_s3.py
 ```
+retail-data-lake/
 
-uploads:
+└── raw/
 
-```text
-calendar.csv
-sales_train_validation.csv
-sell_prices.csv
-```
+    ├── calendar.csv
 
-into the S3 raw layer.
+    ├── sales_train_validation.csv
 
----
-
-# AWS S3 Data Lake
-
-Amazon S3 is used as the raw storage layer.
-
-Responsibilities:
-
-- Store raw retail datasets
-- Maintain original source files
-- Provide scalable cloud storage
-
-Example structure:
-
-```text
-s3://retail-data-lake/raw/
-
-calendar.csv
-sales_train_validation.csv
-sell_prices.csv
+    └── sell_prices.csv
 ```
 
 ---
 
-# AWS Glue
+# 2. AWS Glue Data Catalog
 
-AWS Glue is used for metadata management and data catalog concepts.
+AWS Glue is used for schema discovery and metadata management.
 
-Responsibilities:
+The Glue crawler:
 
-- Schema discovery
-- Metadata management
-- Data cataloging
-- Supporting ETL workflows
+- Reads datasets stored in S3
+- Detects schemas
+- Creates catalog tables
+- Enables SQL querying through Athena
 
-Workflow:
 
-```text
-Amazon S3
+Configuration:
 
-    |
-
-AWS Glue Crawler
-
-    |
-
-Glue Data Catalog
+```
+aws/glue/crawler_config.md
 ```
 
 ---
 
-# Amazon Athena
+# 3. Amazon Athena Analytics Layer
 
-Amazon Athena enables SQL querying directly on data stored in Amazon S3.
+Amazon Athena provides serverless SQL querying directly on data stored in Amazon S3.
+
+Example queries:
+
+```
+aws/athena/queries.sql
+```
 
 Use cases:
 
-- Data exploration
-- Data validation
-- Serverless analytics queries
-
-Example:
-
-```sql
-SELECT
-    *
-FROM retail_sales
-LIMIT 10;
-```
+- Exploring raw datasets
+- Validating ingestion
+- Running analytical queries before loading into warehouse
 
 ---
 
-# Snowflake Data Warehouse
+# 4. Snowflake Cloud Data Warehouse
 
-Snowflake is used as the analytical warehouse layer.
+Snowflake is used as the analytical warehouse.
 
 Database:
 
-```text
+```
 RETAIL_ANALYTICS
 ```
 
-Schemas:
+Schema structure:
 
-```text
+```
 RAW
+
  |
+
 STAGING
+
  |
+
 SNAPSHOTS
-```
 
-Snowflake responsibilities:
+ |
 
-- Store analytical datasets
-- Execute scalable SQL workloads
-- Support analytics workloads
-
----
-
-# dbt Transformations
-
-The transformation layer is implemented using dbt.
-
-dbt is responsible for:
-
-- SQL-based transformations
-- Data modeling
-- Data quality testing
-- Analytics-ready datasets
-
-Architecture:
-
-```text
-RAW DATA
-
-    |
-
-STAGING MODELS
-
-    |
-
-ANALYTICAL MARTS
+MARTS
 ```
 
 ---
 
-# Staging Layer
+# dbt Transformation Layer
 
-The staging layer cleans and standardizes raw datasets.
+dbt is used to transform raw warehouse data into analytics-ready models.
+
+Transformation flow:
+
+```
+RAW
+
+ |
+
+STAGING
+
+ |
+
+MARTS
+```
 
 ---
+
+# Staging Models
 
 ## stg_sales
 
-Transforms raw sales data.
+Cleans and standardizes retail sales data.
 
-Main columns:
+Main fields:
 
-```text
+```
 ID
 ITEM_ID
 DEPT_ID
@@ -324,11 +318,11 @@ D_1 ... D_1913
 
 ## stg_prices
 
-Transforms weekly product pricing information.
+Weekly product pricing information.
 
 Columns:
 
-```text
+```
 STORE_ID
 ITEM_ID
 WM_YR_WK
@@ -339,11 +333,11 @@ SELL_PRICE
 
 ## stg_calendar
 
-Creates a calendar dimension.
+Calendar dimension.
 
 Columns:
 
-```text
+```
 DATE
 WM_YR_WK
 EVENT_NAME
@@ -359,17 +353,20 @@ SNAP_WI
 
 ## Fact Sales Table
 
-Created an analytical fact table by transforming sales data and enriching it with reference information.
+A sales fact table is created by combining:
 
-The fact table provides a structured layer for downstream analytics and reporting.
+- Sales information
+- Calendar attributes
+- Pricing information
+
 
 ---
 
 ## Fact Sales Long Table
 
-The original M5 sales dataset is provided in a wide format:
+The original M5 dataset uses a wide format:
 
-```text
+```
 D_1
 D_2
 D_3
@@ -377,11 +374,9 @@ D_3
 D_1913
 ```
 
-This project converts the sales data into a normalized long format using Snowflake UNPIVOT functionality.
+The project converts the dataset into a normalized long format:
 
-Output structure:
-
-```text
+```
 ID
 ITEM_ID
 STORE_ID
@@ -389,26 +384,13 @@ D
 SALES
 ```
 
+using Snowflake UNPIVOT functionality.
+
 Benefits:
 
 - Easier analytics
 - Better time-series analysis
 - Improved downstream querying
-- Better compatibility with analytical workloads
-
----
-
-# Analytics Mart
-
-## daily_sales_metrics
-
-Creates business-ready analytical metrics.
-
-Examples:
-
-- Total daily sales
-- Sales by store
-- Sales trends over time
 
 ---
 
@@ -418,97 +400,65 @@ dbt snapshots are used to track historical changes.
 
 Example:
 
-```text
+```
 prices_snapshot
 ```
 
-Tracks changes in:
+Tracks:
 
-```text
+```
 SELL_PRICE
 ```
 
-over time.
+changes over time.
 
-Benefits:
-
-- Historical price tracking
-- Slowly changing dimension concepts
+This enables historical price analysis.
 
 ---
 
 # Data Quality Testing
 
-Implemented dbt data quality checks:
+Implemented dbt tests:
 
 - not_null validation
 - unique validation
 
-Run:
 
-```bash
+Example:
+
+```
 dbt test
 ```
 
-Example result:
+Result:
 
-```text
-15 tests passed
+```
+All tests passed
 ```
 
 ---
 
 # Running the Project
 
-## Install Python dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
----
-
-## Upload data to S3
-
-Configure environment variables:
-
-```env
-AWS_BUCKET_NAME=<your_bucket_name>
-```
-
-Run:
-
-```bash
-python src/ingestion/upload_to_s3.py
-```
-
----
-
-## Install dbt dependencies
+Install dbt dependencies:
 
 ```bash
 dbt deps
 ```
 
----
-
-## Run dbt transformations
+Run transformations:
 
 ```bash
 dbt run
 ```
 
----
-
-## Run data quality tests
+Run data quality tests:
 
 ```bash
 dbt test
 ```
 
----
-
-## Run snapshots
+Run snapshots:
 
 ```bash
 dbt snapshot
@@ -516,40 +466,46 @@ dbt snapshot
 
 ---
 
-# Key Skills Demonstrated
+# Environment Configuration
 
-- Cloud Data Architecture
-- AWS S3 Data Lake
-- AWS Glue Data Catalog
-- Amazon Athena Analytics
-- Snowflake Cloud Data Warehouse
-- dbt Analytics Engineering
-- ELT Pipeline Development
-- SQL Data Modeling
-- Data Quality Testing
-- Retail Analytics
+Create a `.env` file:
+
+```
+AWS_BUCKET_NAME=
+AWS_REGION=
+
+SNOWFLAKE_ACCOUNT=
+SNOWFLAKE_USER=
+SNOWFLAKE_PASSWORD=
+SNOWFLAKE_DATABASE=
+SNOWFLAKE_SCHEMA=
+```
+
+Never commit real credentials.
 
 ---
 
-# Project Outcome
+# Key Skills Demonstrated
 
-This project demonstrates the design and implementation of a modern cloud analytics platform that transforms raw retail data into trusted analytical datasets.
+This project demonstrates practical experience with:
 
-The platform combines:
-
-- AWS cloud services for ingestion and storage
-- Snowflake for analytical processing
-- dbt for scalable transformations and testing
-
-The final output is an analytics-ready data platform suitable for retail reporting and downstream analysis.
+- Cloud Data Lake Architecture
+- AWS S3 Data Ingestion
+- AWS Glue Data Catalog
+- Amazon Athena
+- Snowflake Data Warehouse
+- dbt ELT Pipelines
+- SQL Data Modeling
+- Data Quality Engineering
+- Python Cloud Automation
 
 ---
 
 # Future Improvements
 
-Potential future enhancements:
+Possible extensions:
 
-- Add Airflow orchestration
-- Add CI/CD pipeline with GitHub Actions
-- Connect Snowflake models to BI tools
-- Deploy dbt workflows in a cloud environment
+- Infrastructure as Code using Terraform
+- Automated deployment with CI/CD
+- Airflow orchestration
+- AWS monitoring and logging
