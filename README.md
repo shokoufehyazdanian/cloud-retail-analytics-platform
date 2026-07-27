@@ -2,14 +2,17 @@
 
 A cloud-based analytics engineering project built on **AWS, Snowflake, and dbt** using the **M5 Retail Sales Forecasting Dataset**.
 
-The goal of this project is to demonstrate a modern cloud analytics platform architecture including:
+## Project Highlights
 
-- Data ingestion into Amazon S3 Data Lake
-- AWS Glue Data Catalog integration
-- Serverless analytics using Amazon Athena
-- Cloud data warehousing with Snowflake
-- ELT transformations using dbt
-- Data quality validation
+This project demonstrates an end-to-end cloud analytics architecture:
+
+- Automated data ingestion from local sources into Amazon S3 using Python and boto3
+- Cloud data lake design with Amazon S3
+- Metadata management using AWS Glue Data Catalog
+- Serverless querying with Amazon Athena
+- Cloud data warehouse implementation using Snowflake
+- ELT pipeline development using dbt Core
+- Data modeling, testing, and historical tracking using dbt
 
 ---
 
@@ -18,25 +21,30 @@ The goal of this project is to demonstrate a modern cloud analytics platform arc
 flowchart LR
 
     A[M5 Retail Dataset]
-        --> B[Python<br/>boto3 Upload]
 
-    B --> C[Amazon S3<br/>Raw Data Lake]
+    subgraph AWS Cloud
+        B[Python<br/>boto3 Upload]
+        C[Amazon S3<br/>Raw Data Lake]
+        D[AWS Glue<br/>Crawler & Catalog]
+        E[Amazon Athena<br/>Serverless SQL]
+    end
 
-    C --> D[AWS Glue<br/>Crawler & Catalog]
+    subgraph Snowflake
+        F[RAW Layer]
+        G[STAGING Layer]
+        H[MARTS Layer]
+    end
 
-    D --> E[Amazon Athena<br/>SQL Queries]
+    A --> B
+    B --> C
+    C --> D
+    D --> E
+    E --> F
+    F --> G
+    G --> H
 
-    E --> F[Snowflake<br/>RAW]
-
-    F --> G[dbt<br/>Staging]
-
-    G --> H[dbt<br/>Mart Models]
-
-    H --> I[Analytics Tables]
-
-    G --> J[dbt Tests]
-
-    G --> K[dbt Snapshots]
+    G --> I[dbt Tests]
+    G --> J[dbt Snapshots]
 ```
 
 # Tech Stack
@@ -202,14 +210,14 @@ retail-data-lake/
 
 # 2. AWS Glue Data Catalog
 
-AWS Glue is used for schema discovery and metadata management.
+AWS Glue is used as the metadata management layer for the data lake.
 
 The Glue crawler:
 
-- Reads datasets stored in S3
-- Detects schemas
-- Creates catalog tables
-- Enables SQL querying through Athena
+- Discovers schemas from files stored in Amazon S3
+- Creates and updates metadata tables
+- Maintains dataset definitions in the Glue Data Catalog
+- Enables integration with Amazon Athena
 
 
 Configuration:
@@ -259,11 +267,11 @@ STAGING
 
  |
 
-SNAPSHOTS
+Marts
 
  |
 
-MARTS
+SNAPSHOTS
 ```
 
 ---
@@ -428,6 +436,22 @@ All tests passed
 ```
 
 ---
+
+# Screenshots
+
+## Amazon S3 Data Lake
+
+![S3 Bucket](docs/screenshots/s3-bucket.png)
+
+
+## Snowflake Data Warehouse
+
+![Snowflake Schema](docs/screenshots/snowflake-schema.png)
+
+
+## dbt Data Quality Tests
+
+![dbt Tests](docs/screenshots/dbt-test.png)
 
 # Running the Project
 
