@@ -1,0 +1,15 @@
+version: 2
+
+sources:
+
+  - name: retail_raw
+    database: RETAIL_ANALYTICS
+    schema: RAW
+
+    tables:
+
+      - name: SALES_RAW
+
+      - name: PRICES_RAW
+
+      - name: CALENDAR_RAW

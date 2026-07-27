@@ -1,0 +1,39 @@
+version: 2
+
+models:
+
+  - name: fact_sales_long
+    description: Long format sales fact table created from M5 sales data
+
+    columns:
+
+      - name: id
+        description: Unique sales series identifier
+        tests:
+          - not_null
+
+      - name: item_id
+        description: Product identifier
+        tests:
+          - not_null
+
+      - name: dept_id
+        description: Department identifier
+
+      - name: store_id
+        description: Store identifier
+        tests:
+          - not_null
+
+      - name: state_id
+        description: State identifier
+
+      - name: d
+        description: Day identifier from M5 dataset
+        tests:
+          - not_null
+
+      - name: sales
+        description: Daily sales quantity
+        tests:
+          - not_null
