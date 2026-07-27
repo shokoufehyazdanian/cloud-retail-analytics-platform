@@ -89,7 +89,7 @@ calendar
 ---
 
 # Project Structure
-
+```text
 cloud-retail-analytics-platform/
 
 │
@@ -120,4 +120,6 @@ cloud-retail-analytics-platform/
 │ └── dbt_project.yml
 │
 └── README.md
+```
+
 
