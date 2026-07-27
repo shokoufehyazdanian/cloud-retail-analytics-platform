@@ -481,7 +481,6 @@ SNOWFLAKE_DATABASE=
 SNOWFLAKE_SCHEMA=
 ```
 
-Never commit real credentials.
 
 ---
 
