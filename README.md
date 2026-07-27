@@ -17,43 +17,27 @@ The goal of this project is to demonstrate a modern cloud analytics platform arc
 ```mermaid
 flowchart LR
 
-    subgraph Source
-        A[M5 Retail Dataset]
-    end
+    A[M5 Retail Dataset]
+        --> B[Python<br/>boto3 Upload]
 
-    subgraph AWS
-        B[Python Upload<br/>boto3]
-        C[Amazon S3]
-        D[AWS Glue]
-        E[Amazon Athena]
-    end
+    B --> C[Amazon S3<br/>Raw Data Lake]
 
-    subgraph Snowflake
-        F[RAW]
-        G[STAGING]
-        H[MARTS]
-        I[SNAPSHOTS]
-    end
+    C --> D[AWS Glue<br/>Crawler & Catalog]
 
-    subgraph dbt
-        J[Staging Models]
-        K[Fact Models]
-        L[Tests]
-    end
+    D --> E[Amazon Athena<br/>SQL Queries]
 
-    A --> B
-    B --> C
-    C --> D
-    D --> E
-    E --> F
-    F --> J
-    J --> G
-    G --> K
-    K --> H
-    J --> L
-    G --> I
+    E --> F[Snowflake<br/>RAW]
+
+    F --> G[dbt<br/>Staging]
+
+    G --> H[dbt<br/>Mart Models]
+
+    H --> I[Analytics Tables]
+
+    G --> J[dbt Tests]
+
+    G --> K[dbt Snapshots]
 ```
----
 
 # Tech Stack
 
