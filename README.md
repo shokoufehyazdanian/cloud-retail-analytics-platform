@@ -14,38 +14,45 @@ The goal of this project is to demonstrate a modern cloud analytics platform arc
 ---
 
 # Architecture
+```mermaid
+flowchart LR
 
-```
-                    M5 Retail Dataset
-                           |
-                           v
-                 Python S3 Ingestion
-                     (boto3)
-                           |
-                           v
-                    Amazon S3
-                 Raw Data Lake Layer
-                           |
-                           v
-                    AWS Glue
-              Data Catalog / Crawler
-                           |
-                           v
-                  Amazon Athena
-              Serverless SQL Analytics
-                           |
-                           v
-                    Snowflake
-             Cloud Data Warehouse Layer
-                           |
-                           v
-                       dbt
-            Transformations & Modeling
-                           |
-                           v
-                Analytics Data Marts
-```
+    subgraph Source
+        A[M5 Retail Dataset]
+    end
 
+    subgraph AWS
+        B[Python Upload<br/>boto3]
+        C[Amazon S3]
+        D[AWS Glue]
+        E[Amazon Athena]
+    end
+
+    subgraph Snowflake
+        F[RAW]
+        G[STAGING]
+        H[MARTS]
+        I[SNAPSHOTS]
+    end
+
+    subgraph dbt
+        J[Staging Models]
+        K[Fact Models]
+        L[Tests]
+    end
+
+    A --> B
+    B --> C
+    C --> D
+    D --> E
+    E --> F
+    F --> J
+    J --> G
+    G --> K
+    K --> H
+    J --> L
+    G --> I
+```
 ---
 
 # Tech Stack
