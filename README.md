@@ -7,6 +7,7 @@ The goal of this project is to demonstrate a modern cloud data platform architec
 ---
 
 # Architecture
+```text
 Retail Dataset
                  |
                  v
@@ -31,8 +32,8 @@ Retail Dataset
                  |
                  v
         Analytics Data Marts
+```
 
----
 
 # Tech Stack
 
