@@ -73,7 +73,7 @@ calendar_raw
 ---
 
 ## Pipeline Flow
-
+```text
 
 CSV Files
 |
@@ -88,7 +88,7 @@ AWS Glue Data Catalog
 |
 v
 Amazon Athena
-
+```
 
 ---
 
